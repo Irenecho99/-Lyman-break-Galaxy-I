@@ -1,0 +1,47 @@
+
+### Kyungjin Cho | kcho36@wisc.edu
+
+#### 1. What I have tried and what worked
+For this project, I have tried lot of different methods to get the final result. Among those, I specifically liked the idea of using a correlation to the distance measure. Between Spearman and Pearson methods of calculating correlation, I finally chose to implement my data analysis with "pearson" method, which is $r = \frac{n(\sum xy)-(\sum x)(\sum y)}{\sqrt{[n\sum {x^2}-(\sum x^2)][n\sum {y^2}-(\sum y^2)]}}$. The reason why I have used pearson method is that the pearson method works with linear relationship better than spearman method. Also, pearson takes into an account that it can calculate the reasonable distance measure without taking scale as well as the mean effect. However, I don't think that this is the most appropriate method to get the final result since the graphs can have a dramatic change when there is a change of variances or there exists a huge outliers. 
+
+#### 2. What did not
+Before implementing the "pearson" method of correlation and trying the "spearman" method, I have tried using Euclidiean distance measure as I mentioned in the Canvas discussion. However, I ran into some problems which were difficult to solve such as having "NaN" fitting file my data. Another thing that was difficult to implement were the outliers. The hardest part using Euclidiean distance was I had no idea how to deal with outliers and missing values. Therefore, to me personally, implementing the Euclidean distance did not work really well.
+
+#### Graphs
+```{r}
+#FITSio
+require("FITSio")
+
+#list of all the 100 data sorted by increasing distance
+lists = read.csv("~/Desktop/2/hw2.csv")
+
+#top 10 data
+top10 <- lists[1:10, ]
+top10
+
+#top 3 data
+top3 <- lists[1:3, ]
+top3
+```
+
+```{r}
+#define cB58
+cB58 = readFrameFromFITS("~/Desktop/2/cB58_Lyman_break.fit")
+
+x = c(3.5, 2.5, 3.5)
+y = c(-2, 4.5, 7)
+
+#create the top 3 plot
+legend = c("topright", "topright", "bottomright")
+for (i in 1:3) {
+  spec = readFrameFromFITS(paste("~/Desktop/2/data", top3$spectrumID[i], sep = "/"))
+  begin = top3$i[i]-1
+  plot(spec$flux, type = "l", col = 4, ylab = "Flux", xlab = "Wavelength", 
+       main = paste(top3$spectrumID[i], sep = " "))
+  lines(c(rep(NA, begin), cB58$FLUX*x[i]+y[i]), col = 2)
+  legend(col = c(4,2), lty = c(1,1), legend = c(top3$spectrumID[i], 
+                  "cB58"), x = legend[i], bty = "n", cex = 0.9)
+}
+
+```
+
